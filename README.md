@@ -1,4 +1,4 @@
-# MCP SaaS para PYMEs Españolas
+# MCP SaaS para PYMEs
 
 Sistema MCP (Model Context Protocol) modular que combina dos módulos principales:
 
