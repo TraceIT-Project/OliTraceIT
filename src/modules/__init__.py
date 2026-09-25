@@ -1,2 +1,0 @@
-"""Módulos del sistema"""
-

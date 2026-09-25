@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 150 10% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 150 10% 15%;
+    --primary: 134 52% 34%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 60 15% 92%;
+    --secondary-foreground: 150 10% 15%;
+    --muted: 60 10% 96%;
+    --muted-foreground: 150 5% 45%;
+    --accent: 60 15% 92%;
+    --accent-foreground: 150 10% 15%;
+    --border: 60 10% 90%;
+    --input: 60 10% 90%;
+    --ring: 134 52% 34%;
+    --radius: 0.625rem;
+    --font-sans: 'DM Sans', system-ui, sans-serif;
+    --font-display: 'Playfair Display', Georgia, serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Gauge chart */
+.gauge-container {
+  position: relative;
+  width: 200px;
+  height: 120px;
+  overflow: hidden;
+}
+
+/* Card hover */
+.card-hover {
+  transition: all 0.2s ease;
+}
+.card-hover:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transform: translateY(-1px);
+}
+
+/* Status badges */
+.badge-success {
+  @apply bg-trace-50 text-trace-700 border border-trace-200;
+}
+.badge-warning {
+  @apply bg-amber-50 text-amber-700 border border-amber-200;
+}
+.badge-info {
+  @apply bg-blue-50 text-blue-700 border border-blue-200;
+}

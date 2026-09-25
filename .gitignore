@@ -1,65 +1,61 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# ===== Dependencies =====
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
 
-# Virtual Environment
-venv/
-env/
-ENV/
-.venv
+# ===== Next.js =====
+/.next/
+/out/
+next-env.d.ts
 
-# IDE
-.vscode/
+# ===== Build output =====
+/build
+/dist
+
+# ===== Testing =====
+/coverage
+
+# ===== Environment variables =====
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# ===== Logs =====
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# ===== TypeScript =====
+*.tsbuildinfo
+
+# ===== OS — macOS =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# ===== OS — Windows =====
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===== Editor — JetBrains =====
 .idea/
+*.iml
+
+# ===== Editor — Vim/Emacs =====
 *.swp
 *.swo
 *~
 
-# Environment variables
-.env
-.env.local
-
-# Logs
-*.log
-logs/
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Documents
-documents/
-*.pdf
-*.docx
-*.xlsx
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Qdrant data
-qdrant_data/
-
-# Temporary files
-*.tmp
-*.temp
-
+# ===== Misc =====
+*.pem
+.vercel
