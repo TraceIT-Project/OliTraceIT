@@ -1,7 +1,3 @@
-// ==========================================
-// TRACE IT - Mock Data
-// ==========================================
-
 // Parcelas
 export const parcelas = [
   {
@@ -64,6 +60,7 @@ export const campanas = [
   { id: "C-2025", nombre: "Campaña 2025", estado: "completada", year: 2025 },
   { id: "C-2026", nombre: "Campaña 2026", estado: "en_curso", year: 2026 },
 ]
+export const CAMPANA_ACTUAL = "C-2026"
 
 // Eventos oleícolas por parcela
 export const eventosAgricolas = [
@@ -187,7 +184,7 @@ export const actividades = [
   },
 ]
 
-// NDVI data
+// NDVI
 export const ndviData = [
   { mes: "Ene", valor: 0.22 },
   { mes: "Feb", valor: 0.25 },
@@ -226,7 +223,7 @@ export const saludParcela = [
   { mes: "Dic", ndvi: 1.3 },
 ]
 
-// Resumen de campañas - formatted in Spanish
+// Resumen de campañas
 export const resumenCampanas = [
   {
     campana: "2024",
@@ -441,18 +438,6 @@ export const lotesRecientes = [
   },
 ]
 
-// Proveedores geográficos
-export const proveedoresGeo = [
-  { nombre: "Finca El Olivar", lat: 37.35, lng: -5.21, volumen: ">50t" },
-  { nombre: "Los Almendros", lat: 37.54, lng: -5.08, volumen: "10-50t" },
-  { nombre: "Cerro Alto", lat: 37.72, lng: -3.97, volumen: "<10t" },
-  { nombre: "Valle del Guadalquivir", lat: 37.62, lng: -4.32, volumen: ">50t" },
-  { nombre: "Olivos del Sur", lat: 37.23, lng: -4.68, volumen: "10-50t" },
-  { nombre: "Cooperativa La Unión", lat: 37.88, lng: -4.15, volumen: ">50t" },
-  { nombre: "Finca Los Pinos", lat: 37.45, lng: -3.72, volumen: "<10t" },
-  { nombre: "AgroJaén", lat: 37.77, lng: -3.78, volumen: "10-50t" },
-]
-
 // Tipos de actividad
 export const tiposActividad = [
   "Tratamiento Fitosanitario",
@@ -475,33 +460,16 @@ export const productosFrecuentes = [
   "Bacillus thuringiensis",
 ]
 
-// Métodos de recolección
-export const metodosRecoleccion = [
-  "Mecánica",
-  "Manual",
-  "Vibrador de tronco",
-  "Vareo",
-  "Mixta",
-]
-
-// Overview stats
+// Estadísticas del panel general
 export const overviewStats = {
   totalParcelas: 4,
   superficieTotal: 28.7,
-  campanasRegistradas: 3,
   lotesGenerados: 12,
   actividadesRegistradas: 47,
   scorePromedioCalidad: 91,
-  produccionTotal2025: 18500,
-  rendimientoGrasoMedio: "21,8%",
-  // Financial — Campaña 2026 (estimados a fecha Feb)
-  ingresosEstimados: 38500,
-  costesProduccion: 14200,
-  beneficioNeto: 24300,
-  margenPct: 63.1,
 }
 
-// User profile data (for user panel)
+// Perfil de usuario
 export const userProfile = {
   nombre: "Antonio",
   apellidos: "López García",
@@ -517,3 +485,31 @@ export const userProfile = {
   direccion: "Ctra. Lantejuela km 3,5 · 41620 Marchena, Sevilla",
   avatar: "AL",
 }
+
+// Notificaciones
+export type NotificationType = "warning" | "success" | "info"
+
+export interface Notification {
+  id: number
+  type: NotificationType
+  title: string
+  desc: string
+  time: string
+  group: string
+  read: boolean
+}
+
+export const notificaciones: Notification[] = [
+  { id: 1, type: "warning", title: "Plazo de seguridad próximo a vencer", desc: "Dimetoato 40 EC · Parcela 1 - Finca El Olivar · Vence en 48 horas", time: "Hace 2 horas", group: "Hoy", read: false },
+  { id: 2, type: "success", title: "Lote certificado con QR", desc: "T-2026-001 · Trazabilidad completa generada · Picual Extra Virgen", time: "Ayer, 15:30", group: "Ayer", read: false },
+  { id: 3, type: "info", title: "Campaña 2026 activa", desc: "18.500 kg acumulados · Rendimiento 23,2% · 4 parcelas contribuyendo", time: "Hace 2 días", group: "Esta semana", read: true },
+  { id: 4, type: "warning", title: "Riego no registrado", desc: "Parcela 4 - Valle del Guadalquivir · 8 días sin registro de riego", time: "Hace 3 días", group: "Esta semana", read: true },
+  { id: 5, type: "success", title: "Actividad registrada correctamente", desc: "Tratamiento fitosanitario · Cobre 50% · Parcela 2 - Sierra Norte", time: "Hace 4 días", group: "Esta semana", read: true },
+  { id: 6, type: "info", title: "Nuevo informe NDVI disponible", desc: "Índice de vegetación actualizado para las 4 parcelas activas", time: "Hace 5 días", group: "Esta semana", read: true },
+  { id: 7, type: "warning", title: "Certificado fitosanitario por caducar", desc: "Licencia de aplicador · Vence el 15/04/2026 · Renovar antes de esa fecha", time: "Hace 1 semana", group: "Anteriores", read: true },
+  { id: 8, type: "success", title: "Lote T-2025-047 exportado", desc: "PDF de trazabilidad generado · Enviado a Cooperativa San Isidro", time: "Hace 1 semana", group: "Anteriores", read: true },
+  { id: 9, type: "info", title: "Actualización de la plataforma", desc: "OliTraceIT v2.4 · Nuevo módulo de predicción de rendimiento disponible", time: "Hace 2 semanas", group: "Anteriores", read: true },
+  { id: 10, type: "success", title: "Parcela 3 añadida al sistema", desc: "Loma de los Alcores · 3,2 ha · Variedad Hojiblanca · SIGPAC verificado", time: "Hace 2 semanas", group: "Anteriores", read: true },
+  { id: 11, type: "warning", title: "Helada prevista esta semana", desc: "Alerta AEMET · Temperaturas bajo cero en Jaén · Revisar protección de parcelas", time: "Hace 3 semanas", group: "Anteriores", read: true },
+  { id: 12, type: "info", title: "Resumen mensual generado", desc: "Febrero 2026 · 12 actividades · 3 lotes · 4.200 kg procesados", time: "Hace 3 semanas", group: "Anteriores", read: true },
+]

@@ -27,9 +27,8 @@ const produccionMensual = [
 export default function OverviewPage() {
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-display)' }}>
+        <h1 className="text-2xl font-bold text-gray-900">
           Panel General
         </h1>
         <p className="text-sm text-gray-500 mt-1">
@@ -37,7 +36,6 @@ export default function OverviewPage() {
         </p>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Parcelas Activas"
@@ -68,51 +66,7 @@ export default function OverviewPage() {
         />
       </div>
 
-      {/* Financial KPIs */}
-      {/*
-      <div>
-        <div className="flex items-center gap-2 mb-3">
-          <div className="flex items-center justify-center w-6 h-6 rounded-md bg-emerald-50">
-            <Euro size={14} className="text-emerald-600" />
-          </div>
-          <p className="text-sm font-semibold text-gray-700">Resumen Económico · Campaña 2026</p>
-          <span className="text-xs text-gray-400 font-normal">(estimado a feb.)</span>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
-            title="Ingresos Estimados"
-            value={formatCurrency(overviewStats.ingresosEstimados)}
-            subtitle="Venta de aceite + subproductos"
-            icon={TrendingUp}
-            trend={{ value: "+12% vs campaña 2025", positive: true }}
-          />
-          <StatCard
-            title="Costes de Producción"
-            value={formatCurrency(overviewStats.costesProduccion)}
-            subtitle="Insumos, mano de obra y riego"
-            icon={TrendingDown}
-            trend={{ value: "-3% vs campaña 2025", positive: true }}
-          />
-          <StatCard
-            title="Beneficio Neto Estimado"
-            value={formatCurrency(overviewStats.beneficioNeto)}
-            subtitle="Ingresos menos costes totales"
-            icon={Euro}
-            trend={{ value: "+18% vs campaña 2025", positive: true }}
-          />
-          <StatCard
-            title="Margen de Beneficio"
-            value={`${overviewStats.margenPct.toLocaleString('es-ES')}%`}
-            subtitle="Sobre ingresos estimados"
-            icon={Percent}
-            trend={{ value: "+3,1 pp vs campaña 2025", positive: true }}
-          />
-        </div>
-      </div>
-*/}
-      {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Producción acumulada */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -131,10 +85,10 @@ export default function OverviewPage() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="mes" tick={{ fontSize: 12 }} stroke="#999" />
-                <YAxis tick={{ fontSize: 12 }} stroke="#999" tickFormatter={(v) => formatNumber(v)} />
+                <YAxis tick={{ fontSize: 12 }} stroke="#999" tickFormatter={(v: number) => formatNumber(v)} />
                 <Tooltip
                   contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 13 }}
-                  formatter={(v: number) => [`${formatNumber(v)} kg`, "Producción"]}
+                  formatter={(v) => [`${formatNumber(Number(v))} kg`, "Producción"]}
                 />
                 <Area
                   type="monotone"
@@ -148,7 +102,6 @@ export default function OverviewPage() {
           </CardContent>
         </Card>
 
-        {/* Parcelas */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -175,11 +128,9 @@ export default function OverviewPage() {
                       <p className="text-xs text-gray-500">{p.variedad} · {p.superficie.toLocaleString('es-ES')} ha</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-trace-700">{p.scoreCalidad}%</p>
-                      <p className="text-[10px] text-gray-400">Calidad</p>
-                    </div>
+                  <div className="text-right">
+                    <p className="text-sm font-semibold text-trace-700">{p.scoreCalidad}%</p>
+                    <p className="text-[10px] text-gray-500">Calidad</p>
                   </div>
                 </Link>
               ))}
@@ -188,7 +139,6 @@ export default function OverviewPage() {
         </Card>
       </div>
 
-      {/* Recent Activity & Lots */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
@@ -203,7 +153,7 @@ export default function OverviewPage() {
             <div className="space-y-3">
               {actividades.slice(0, 4).map((a) => (
                 <div key={a.id} className="flex items-start gap-3 rounded-lg border p-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 flex-shrink-0 mt-0.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 shrink-0 mt-0.5">
                     <Calendar size={14} />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -213,7 +163,7 @@ export default function OverviewPage() {
                       {a.producto ? ` · ${a.producto}` : ""}
                     </p>
                   </div>
-                  <span className="text-xs text-gray-400 flex-shrink-0">{formatDate(a.fecha)}</span>
+                  <span className="text-xs text-gray-500 shrink-0">{formatDate(a.fecha)}</span>
                 </div>
               ))}
             </div>
@@ -233,11 +183,11 @@ export default function OverviewPage() {
             <div className="space-y-3">
               {lotes.map((l) => (
                 <div key={l.id} className="flex items-start gap-3 rounded-lg border p-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-trace-50 text-trace-600 flex-shrink-0 mt-0.5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-trace-50 text-trace-600 shrink-0 mt-0.5">
                     <Package size={14} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                       <p className="text-sm font-medium text-gray-900">{l.id}</p>
                       {l.trazabilidadCompleta && (
                         <Badge variant="success" className="text-[10px] py-0">Trazabilidad Completa</Badge>
@@ -247,7 +197,7 @@ export default function OverviewPage() {
                       {l.parcelaNombre} · {formatNumber(l.volumenEstimado)} kg
                     </p>
                   </div>
-                  <span className="text-xs text-gray-400 flex-shrink-0">{formatDate(l.fechaCosecha)}</span>
+                  <span className="text-xs text-gray-500 shrink-0">{formatDate(l.fechaCosecha)}</span>
                 </div>
               ))}
             </div>

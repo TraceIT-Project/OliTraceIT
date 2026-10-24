@@ -6,15 +6,15 @@ import { GaugeChart } from "@/components/charts/gauge-chart"
 import { formatNumber } from "@/lib/utils"
 import {
   rankingAgricultores, recepcionPorMes, rendimientoGrasoCampanas,
-  lotesRecientes, campanas,
+  lotesRecientes, campanas, CAMPANA_ACTUAL,
 } from "@/lib/mock-data"
-import { TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { TrendingUp, TrendingDown, Minus, type LucideIcon } from "lucide-react"
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, Legend,
 } from "recharts"
 
-const trendIcons: Record<string, any> = {
+const trendIcons: Record<string, LucideIcon> = {
   up: TrendingUp,
   down: TrendingDown,
   stable: Minus,
@@ -23,7 +23,7 @@ const trendIcons: Record<string, any> = {
 const trendColors: Record<string, string> = {
   up: "text-emerald-600",
   down: "text-red-500",
-  stable: "text-gray-400",
+  stable: "text-gray-500",
 }
 
 export default function AlmazaraPage() {
@@ -31,7 +31,7 @@ export default function AlmazaraPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-display)' }}>
+          <h1 className="text-2xl font-bold text-gray-900">
             Dashboard de Almazara - Inteligencia Operativa
           </h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -40,8 +40,8 @@ export default function AlmazaraPage() {
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">Filtro:</span>
-          <Select defaultValue={campanas[0]?.id}>
-            <SelectTrigger>
+          <Select defaultValue={CAMPANA_ACTUAL}>
+            <SelectTrigger aria-label="Campaña">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -54,7 +54,6 @@ export default function AlmazaraPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-6 gap-y-4">
-        {/* Row 1: Section labels */}
         <div className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
           Ranking y Predicción
         </div>
@@ -62,7 +61,6 @@ export default function AlmazaraPage() {
           Mapa y Comparativas
         </div>
 
-        {/* Row 2: Ranking | Distribution — same height via grid row */}
         <Card>
           <CardHeader>
             <CardTitle>Ranking Dinámico de Agricultores (Top 5)</CardTitle>
@@ -83,7 +81,7 @@ export default function AlmazaraPage() {
                       <div>
                         <p className="text-sm font-medium text-gray-900">
                           {a.nombre}
-                          <span className="ml-1.5 text-xs text-gray-400">({a.score.toLocaleString('es-ES')}/10)</span>
+                          <span className="ml-1.5 text-xs text-gray-500">({a.score.toLocaleString('es-ES')}/10)</span>
                         </p>
                         <p className="text-xs text-gray-500">
                           Vol: {a.volumen}, RG: {a.rendimientoGraso}
@@ -103,16 +101,13 @@ export default function AlmazaraPage() {
           </CardContent>
         </Card>
 
-        {/* Geographic distribution - Andalucía Map */}
         <Card>
             <CardHeader>
               <CardTitle>Distribución Geográfica de Proveedores y Lotes</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="rounded-lg h-[240px] relative overflow-hidden border bg-gradient-to-b from-blue-50/50 to-green-50/30">
-                {/* SVG Map of Andalucía */}
-                <svg viewBox="0 0 600 350" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                  {/* Andalucía outline (simplified) */}
+              <div className="rounded-lg h-[220px] sm:h-[260px] relative overflow-hidden border bg-linear-to-b from-blue-50/50 to-green-50/30">
+                <svg viewBox="0 0 600 350" className="w-full h-full" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa de proveedores en Andalucía">
                   <path
                     d="M80,180 Q100,140 140,120 Q180,100 220,95 Q260,90 300,85 Q340,80 380,90 Q420,100 450,120 Q480,140 510,155 Q530,165 550,170 Q560,175 555,195 Q550,215 535,230 Q520,245 500,255 Q480,265 455,270 Q430,275 405,278 Q380,280 355,282 Q330,285 305,290 Q280,295 255,295 Q230,295 205,290 Q180,285 155,275 Q130,265 110,250 Q90,235 80,215 Q70,200 80,180Z"
                     fill="#e8f5e9"
@@ -120,81 +115,69 @@ export default function AlmazaraPage() {
                     strokeWidth="1.5"
                     opacity="0.7"
                   />
-                  {/* Province borders */}
                   <path d="M220,95 L230,150 L200,200 L155,275" stroke="#a5d6a7" strokeWidth="0.7" fill="none" strokeDasharray="3,3" />
                   <path d="M300,85 L290,160 L305,290" stroke="#a5d6a7" strokeWidth="0.7" fill="none" strokeDasharray="3,3" />
                   <path d="M380,90 L370,170 L355,282" stroke="#a5d6a7" strokeWidth="0.7" fill="none" strokeDasharray="3,3" />
                   <path d="M140,120 L290,160 L510,155" stroke="#a5d6a7" strokeWidth="0.7" fill="none" strokeDasharray="3,3" />
 
-                  {/* Province labels */}
-                  <text x="130" y="180" fontSize="9" fill="#666" fontWeight="500">Huelva</text>
-                  <text x="210" y="170" fontSize="9" fill="#666" fontWeight="500">Sevilla</text>
-                  <text x="310" y="155" fontSize="9" fill="#666" fontWeight="500">Córdoba</text>
-                  <text x="410" y="145" fontSize="9" fill="#666" fontWeight="500">Jaén</text>
-                  <text x="480" y="195" fontSize="9" fill="#666" fontWeight="500">Granada</text>
-                  <text x="240" y="270" fontSize="9" fill="#666" fontWeight="500">Cádiz</text>
-                  <text x="340" y="265" fontSize="9" fill="#666" fontWeight="500">Málaga</text>
-                  <text x="480" y="250" fontSize="9" fill="#666" fontWeight="500">Almería</text>
+                  <text x="130" y="180" fontSize="13" fill="#555" fontWeight="500">Huelva</text>
+                  <text x="210" y="170" fontSize="13" fill="#555" fontWeight="500">Sevilla</text>
+                  <text x="310" y="155" fontSize="13" fill="#555" fontWeight="500">Córdoba</text>
+                  <text x="470" y="162" fontSize="13" fill="#555" fontWeight="500">Jaén</text>
+                  <text x="480" y="195" fontSize="13" fill="#555" fontWeight="500">Granada</text>
+                  <text x="240" y="270" fontSize="13" fill="#555" fontWeight="500">Cádiz</text>
+                  <text x="340" y="265" fontSize="13" fill="#555" fontWeight="500">Málaga</text>
+                  <text x="480" y="250" fontSize="13" fill="#555" fontWeight="500">Almería</text>
 
-                  {/* Provider pins - positioned approximately on real Andalucía coords */}
-                  {/* Finca El Olivar - Sevilla area */}
+                  {/* Proveedores (posición aproximada) */}
                   <circle cx="230" cy="195" r="8" fill="#1c611f" opacity="0.9" />
                   <circle cx="230" cy="195" r="12" fill="#1c611f" opacity="0.15" />
-                  <text x="243" y="198" fontSize="7.5" fill="#1c611f" fontWeight="600">Finca El Olivar</text>
+                  <text x="243" y="198" fontSize="12" fill="#1c611f" fontWeight="600">Finca El Olivar</text>
 
-                  {/* Los Almendros - Écija area */}
                   <circle cx="270" cy="180" r="6" fill="#2d8f2d" opacity="0.9" />
-                  <text x="280" y="183" fontSize="7" fill="#2d8f2d" fontWeight="500">Los Almendros</text>
+                  <text x="280" y="183" fontSize="11" fill="#2d8f2d" fontWeight="500">Los Almendros</text>
 
-                  {/* Valle del Guadalquivir - Baena, Córdoba */}
                   <circle cx="340" cy="170" r="8" fill="#1c611f" opacity="0.9" />
                   <circle cx="340" cy="170" r="12" fill="#1c611f" opacity="0.15" />
-                  <text x="353" y="173" fontSize="7.5" fill="#1c611f" fontWeight="600">Valle Guadalquivir</text>
+                  <text x="353" y="173" fontSize="12" fill="#1c611f" fontWeight="600">Valle Guadalquivir</text>
 
-                  {/* Cerro Alto - Martos, Jaén */}
                   <circle cx="400" cy="155" r="5" fill="#66bb6a" opacity="0.9" />
-                  <text x="408" y="158" fontSize="7" fill="#388e3c" fontWeight="500">Cerro Alto</text>
+                  <text x="408" y="158" fontSize="11" fill="#388e3c" fontWeight="500">Cerro Alto</text>
 
-                  {/* Cooperativa La Unión - Jaén north */}
                   <circle cx="430" cy="125" r="8" fill="#1c611f" opacity="0.9" />
                   <circle cx="430" cy="125" r="12" fill="#1c611f" opacity="0.15" />
-                  <text x="443" y="128" fontSize="7.5" fill="#1c611f" fontWeight="600">Coop. La Unión</text>
+                  <text x="443" y="128" fontSize="12" fill="#1c611f" fontWeight="600">Coop. La Unión</text>
 
-                  {/* AgroJaén */}
-                  <circle cx="420" cy="140" r="6" fill="#2d8f2d" opacity="0.9" />
+                  <circle cx="420" cy="140" r="6" fill="#2d8f2d" opacity="0.9">
+                    <title>AgroJaén</title>
+                  </circle>
 
-                  {/* Olivos del Sur - Córdoba/Málaga border */}
                   <circle cx="310" cy="215" r="6" fill="#2d8f2d" opacity="0.9" />
-                  <text x="320" y="218" fontSize="7" fill="#2d8f2d" fontWeight="500">Olivos del Sur</text>
+                  <text x="320" y="218" fontSize="11" fill="#2d8f2d" fontWeight="500">Olivos del Sur</text>
 
-                  {/* Finca Los Pinos - Jaén east */}
-                  <circle cx="380" cy="165" r="4" fill="#66bb6a" opacity="0.9" />
+                  <circle cx="380" cy="165" r="4" fill="#66bb6a" opacity="0.9">
+                    <title>Finca Los Pinos</title>
+                  </circle>
                 </svg>
 
-                {/* Legend overlay */}
-                <div className="absolute top-3 right-3 bg-white/95 rounded-lg p-2.5 text-xs space-y-1 shadow-sm border backdrop-blur-sm">
-                  <p className="font-semibold text-gray-700 mb-1">Volumen</p>
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-3 w-3 rounded-full bg-trace-700" />
-                    <span className="text-gray-600">{">"}50 t</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-2.5 w-2.5 rounded-full bg-trace-400" />
-                    <span className="text-gray-600">10-50 t</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="h-2 w-2 rounded-full bg-trace-200" />
-                    <span className="text-gray-600">{"<"}10 t</span>
-                  </div>
+                <div className="absolute left-3 top-3 flex items-center gap-2.5 rounded-lg border bg-white/95 px-2.5 py-1.5 text-[11px] shadow-xs backdrop-blur-xs sm:text-xs">
+                  <span className="font-semibold text-gray-700">Volumen</span>
+                  <span className="flex items-center gap-1 text-gray-600">
+                    <span className="h-3 w-3 rounded-full bg-trace-700" />{">"}50 t
+                  </span>
+                  <span className="flex items-center gap-1 text-gray-600">
+                    <span className="h-2.5 w-2.5 rounded-full bg-trace-400" />10-50 t
+                  </span>
+                  <span className="flex items-center gap-1 text-gray-600">
+                    <span className="h-2 w-2 rounded-full bg-trace-200" />{"<"}10 t
+                  </span>
                 </div>
 
-                {/* Map title */}
-                <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm rounded-lg px-2.5 py-1 text-xs font-medium text-gray-600 border">
+                <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-xs rounded-lg px-2.5 py-1 text-xs font-medium text-gray-600 border">
                   Andalucía · 8 proveedores activos
                 </div>
               </div>
 
-              {/* Recent lots */}
               <div className="mt-4">
                 <h4 className="text-sm font-semibold text-gray-700 mb-2">Lotes Recientes Recibidos</h4>
                 <div className="space-y-2">
@@ -211,13 +194,12 @@ export default function AlmazaraPage() {
             </CardContent>
           </Card>
 
-        {/* Row 3: Prediction | Rendimiento */}
         <Card>
           <CardHeader>
             <CardTitle>Predicción Agregada de Volumen de Campaña (2026)</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-[auto,1fr] gap-6 items-center">
+            <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-6 items-center">
               <div className="flex justify-center">
                 <GaugeChart
                   value={150000}
@@ -237,7 +219,7 @@ export default function AlmazaraPage() {
                     <YAxis tick={{ fontSize: 11 }} stroke="#999" width={40} />
                     <Tooltip
                       contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12 }}
-                      formatter={(v: number) => [formatNumber(v) + ' t', '']}
+                      formatter={(v) => [`${formatNumber(Number(v))} t`, ""]}
                     />
                     <Legend iconSize={10} wrapperStyle={{ fontSize: 11 }} />
                     <Bar dataKey="estimado" name="Estimado" fill="#d1d5db" radius={[3, 3, 0, 0]} />
@@ -261,7 +243,7 @@ export default function AlmazaraPage() {
                 <YAxis tick={{ fontSize: 11 }} stroke="#999" domain={[18, 26]} unit="%" width={35} />
                 <Tooltip
                   contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12 }}
-                  formatter={(v: number) => [v.toLocaleString('es-ES') + '%', '']}
+                  formatter={(v) => [`${Number(v).toLocaleString("es-ES")}%`, ""]}
                 />
                 <Legend iconSize={10} wrapperStyle={{ fontSize: 11 }} />
                 <Line type="monotone" dataKey="c2024" name="2024" stroke="#d1d5db" strokeWidth={2} dot={{ r: 3 }} />

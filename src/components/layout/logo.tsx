@@ -1,45 +1,36 @@
 import Image from "next/image"
+import { cn } from "@/lib/utils"
 
-export function Logo({ className = "", size = "default" }: { className?: string; size?: "sm" | "default" | "lg" }) {
-  const sizes = {
-    sm: { img: 28, text: "text-lg" },
-    default: { img: 36, text: "text-xl" },
-    lg: { img: 44, text: "text-2xl" },
-  }
+const sizes = {
+  sm: { img: 28, text: "text-lg" },
+  default: { img: 36, text: "text-xl" },
+  lg: { img: 44, text: "text-2xl" },
+}
 
+interface LogoProps {
+  className?: string
+  size?: keyof typeof sizes
+  inverted?: boolean
+  textClassName?: string
+}
+
+export function Logo({ className, size = "default", inverted = false, textClassName }: LogoProps) {
   const s = sizes[size]
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <span className={cn("flex items-center gap-2", className)}>
       <Image
         src="/logo.png"
-        alt="TRACE IT"
-        width="40"
-        height="40"
-        className="object-contain"
-        priority
+        alt=""
+        width={s.img}
+        height={s.img}
+        className={cn("shrink-0 object-contain", inverted && "brightness-0 invert")}
+        preload
       />
-      <div className="flex items-baseline gap-0.5">
-        <span className={`${s.text} font-bold tracking-tight text-gray-900`} style={{ fontFamily: 'var(--font-sans)' }}>
-          TRACE
-        </span>
-        <span className={`${s.text} font-bold tracking-tight text-trace-700`} style={{ fontFamily: 'var(--font-sans)' }}>
-          IT
-        </span>
-      </div>
-    </div>
-  )
-}
-
-export function LogoIcon({ className = "" }: { className?: string }) {
-  return (
-    <Image
-      src="/logo.png"
-      alt="TRACE IT"
-      width={36}
-      height={36}
-      className={`object-contain ${className}`}
-      priority
-    />
+      <span className={cn("font-sans font-bold tracking-tight", s.text, textClassName)}>
+        <span className={inverted ? "text-white" : "text-gray-900"}>OliTrace</span>
+        <span className={inverted ? "text-trace-200" : "text-trace-700"}>IT</span>
+      </span>
+    </span>
   )
 }

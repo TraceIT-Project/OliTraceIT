@@ -1,14 +1,15 @@
 "use client"
 
+import { useEffect } from "react"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useSidebar } from "@/lib/sidebar-context"
-import Image from "next/image"
+import { Logo } from "@/components/layout/logo"
 import {
   Home,
   LayoutGrid,
-  Edit3,
+  PenLine,
   FileText,
   Package,
   BarChart3,
@@ -22,68 +23,55 @@ import {
 const navItems = [
   { href: "/overview", label: "Inicio", icon: Home },
   { href: "/parcelas", label: "Parcelas", icon: LayoutGrid },
-  { href: "/actividades", label: "Actividades", icon: Edit3 },
+  { href: "/actividades", label: "Actividades", icon: PenLine },
   { href: "/campanas", label: "Campañas", icon: FileText },
   { href: "/lotes", label: "Lotes", icon: Package },
   { href: "/almazara", label: "Almazara", icon: BarChart3 },
 ]
 
-const bottomItems = [
-  { href: "/perfil", label: "Mi Perfil", icon: User },
-]
+const itemClass = "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
+const inactiveClass = "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
 
 export function Sidebar() {
   const pathname = usePathname()
-  const router = useRouter()
   const { collapsed, toggle, mobileOpen, closeMobile } = useSidebar()
 
-  const handleLogout = () => {
-    router.push("/")
-  }
+  useEffect(() => {
+    if (!mobileOpen) return
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") closeMobile() }
+    document.addEventListener("keydown", handler)
+    return () => document.removeEventListener("keydown", handler)
+  }, [mobileOpen, closeMobile])
 
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 z-50 flex h-screen w-[210px] flex-col border-r bg-white transition-all duration-300",
-        // Mobile: slide in/out
-        mobileOpen ? "translate-x-0" : "-translate-x-full",
-        // Desktop: always visible, width based on collapsed state
-        "lg:translate-x-0",
+        "fixed left-0 top-0 z-50 flex h-dvh w-[210px] flex-col border-r bg-white transition-all duration-300 lg:translate-x-0",
+        mobileOpen ? "translate-x-0" : "-translate-x-full max-lg:invisible",
         collapsed && "lg:w-[68px]"
       )}
     >
-      {/* Logo */}
       <div className="relative">
         <div className={cn(
           "flex h-16 items-center border-b",
-          collapsed ? "lg:justify-center px-4 lg:px-0" : "px-4"
+          collapsed ? "px-4 lg:justify-center lg:px-0" : "px-4"
         )}>
-          <Link href="/overview" onClick={closeMobile} className="flex items-center gap-1.5 overflow-hidden">
-            <Image
-              src="/logo.png"
-              alt="TRACE IT"
-              width={32}
-              height={32}
-              className="w-9 h-9 object-contain flex-shrink-0"
-            />
-            <div className={cn("flex items-baseline gap-0.5", collapsed && "lg:hidden")}>
-              <span className="text-lg font-bold tracking-tight text-gray-900">TRACE</span>
-              <span className="text-lg font-bold tracking-tight text-trace-700">IT</span>
-            </div>
+          <Link href="/overview" onClick={closeMobile} aria-label="OliTraceIT - Inicio" className="overflow-hidden">
+            <Logo size="sm" className="gap-1.5" textClassName={cn(collapsed && "lg:hidden")} />
           </Link>
-          {/* Mobile close button */}
           <button
             onClick={closeMobile}
-            className="ml-auto flex h-7 w-7 items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors lg:hidden"
+            aria-label="Cerrar menú"
+            className="ml-auto flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-600 lg:hidden"
           >
             <X size={16} />
           </button>
         </div>
-        {/* Desktop collapse toggle */}
         <button
           onClick={toggle}
+          aria-label={collapsed ? "Expandir menú" : "Contraer menú"}
           className={cn(
-            "absolute -bottom-3 z-10 hidden lg:flex h-6 w-6 items-center justify-center rounded-full border bg-white text-gray-400 shadow-sm hover:text-gray-600 transition-colors",
+            "absolute -bottom-3 z-10 hidden h-6 w-6 items-center justify-center rounded-full border bg-white text-gray-500 shadow-xs transition-colors hover:text-gray-600 lg:flex",
             collapsed ? "left-1/2 -translate-x-1/2" : "right-4"
           )}
         >
@@ -91,8 +79,7 @@ export function Sidebar() {
         </button>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-3 py-5">
+      <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-5">
         {navItems.map((item) => {
           const isActive = pathname === item.href
           return (
@@ -101,50 +88,38 @@ export function Sidebar() {
               href={item.href}
               onClick={closeMobile}
               title={collapsed ? item.label : undefined}
+              aria-current={isActive ? "page" : undefined}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
-                isActive
-                  ? "bg-trace-50 text-trace-700 shadow-sm border border-trace-100"
-                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                itemClass,
+                isActive ? "border border-trace-100 bg-trace-50 text-trace-700 shadow-xs" : inactiveClass
               )}
             >
-              <item.icon size={20} className={cn("flex-shrink-0", isActive && "text-trace-600")} />
+              <item.icon size={20} className={cn("shrink-0", isActive && "text-trace-600")} />
               <span className={cn(collapsed && "lg:hidden")}>{item.label}</span>
             </Link>
           )
         })}
       </nav>
 
-      {/* Bottom */}
-      <div className="border-t px-3 py-3 space-y-1">
-        {bottomItems.map((item) => {
-          const isActive = pathname === item.href
-          return (
-            <Link
-              key={item.label}
-              href={item.href}
-              onClick={closeMobile}
-              title={collapsed ? item.label : undefined}
-              className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                isActive
-                  ? "bg-trace-50 text-trace-700"
-                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-              )}
-            >
-              <item.icon size={20} className="flex-shrink-0" />
-              <span className={cn(collapsed && "lg:hidden")}>{item.label}</span>
-            </Link>
-          )
-        })}
-        <button
-          onClick={handleLogout}
-          title={collapsed ? "Cerrar sesión" : undefined}
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-black hover:bg-red-50 hover:text-red-600 transition-colors"
+      <div className="space-y-1 border-t px-3 py-3">
+        <Link
+          href="/perfil"
+          onClick={closeMobile}
+          title={collapsed ? "Mi Perfil" : undefined}
+          aria-current={pathname === "/perfil" ? "page" : undefined}
+          className={cn(itemClass, pathname === "/perfil" ? "bg-trace-50 text-trace-700" : inactiveClass)}
         >
-          <LogOut size={20} className="flex-shrink-0" />
+          <User size={20} className="shrink-0" />
+          <span className={cn(collapsed && "lg:hidden")}>Mi Perfil</span>
+        </Link>
+        <Link
+          href="/"
+          title={collapsed ? "Cerrar sesión" : undefined}
+          className={cn(itemClass, "text-gray-500 hover:bg-red-50 hover:text-red-600")}
+        >
+          <LogOut size={20} className="shrink-0" />
           <span className={cn(collapsed && "lg:hidden")}>Cerrar sesión</span>
-        </button>
+        </Link>
       </div>
     </aside>
   )

@@ -1,5 +1,3 @@
-"use client"
-
 interface GaugeChartProps {
   value: number
   max: number
@@ -9,6 +7,9 @@ interface GaugeChartProps {
   color?: string
 }
 
+const sizes = { sm: 140, md: 200, lg: 260 }
+const strokeWidths = { sm: 16, md: 20, lg: 24 }
+
 export function GaugeChart({
   value,
   max,
@@ -17,31 +18,25 @@ export function GaugeChart({
   size = "md",
   color = "#1c611f",
 }: GaugeChartProps) {
-  const percentage = (value / max) * 100
-  const angle = (percentage / 100) * 180
-  const sizes = { sm: 140, md: 200, lg: 260 }
   const s = sizes[size]
-  const strokeWidth = size === "sm" ? 16 : size === "md" ? 20 : 24
+  const strokeWidth = strokeWidths[size]
   const radius = (s - strokeWidth) / 2
   const circumference = Math.PI * radius
-
-  const trackD = `M ${strokeWidth / 2} ${s / 2} A ${radius} ${radius} 0 0 1 ${s - strokeWidth / 2} ${s / 2}`
-  const offset = circumference - (percentage / 100) * circumference
+  const offset = circumference * (1 - value / max)
+  const arc = `M ${strokeWidth / 2} ${s / 2} A ${radius} ${radius} 0 0 1 ${s - strokeWidth / 2} ${s / 2}`
 
   return (
-    <div className="flex flex-col items-center">
-      <svg width={s} height={s / 2 + 10} viewBox={`0 0 ${s} ${s / 2 + 10}`}>
-        {/* Track */}
+    <div className="flex w-full flex-col items-center">
+      <svg
+        viewBox={`0 0 ${s} ${s / 2 + 10}`}
+        className="h-auto w-full"
+        style={{ maxWidth: s }}
+        role="img"
+        aria-label={`${label}${sublabel ? ` ${sublabel}` : ""}`}
+      >
+        <path d={arc} fill="none" stroke="#e5e7eb" strokeWidth={strokeWidth} strokeLinecap="round" />
         <path
-          d={trackD}
-          fill="none"
-          stroke="#e5e7eb"
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-        />
-        {/* Value */}
-        <path
-          d={trackD}
+          d={arc}
           fill="none"
           stroke={color}
           strokeWidth={strokeWidth}
@@ -51,13 +46,9 @@ export function GaugeChart({
           className="transition-all duration-1000 ease-out"
         />
       </svg>
-      <div className="text-center -mt-4">
-        <div className="text-3xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-sans)' }}>
-          {label}
-        </div>
-        {sublabel && (
-          <div className="text-sm text-gray-500 mt-0.5">{sublabel}</div>
-        )}
+      <div className="-mt-4 text-center">
+        <div className="text-3xl font-bold text-gray-900">{label}</div>
+        {sublabel && <div className="mt-0.5 text-sm text-gray-500">{sublabel}</div>}
       </div>
     </div>
   )

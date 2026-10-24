@@ -9,12 +9,12 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   const { collapsed, mobileOpen, closeMobile } = useSidebar()
   return (
     <div className={cn(
-      "flex-1 min-w-0 transition-all duration-300",
+      "min-w-0 flex-1 transition-all duration-300",
       collapsed ? "lg:ml-[68px]" : "lg:ml-[210px]"
     )}>
-      {/* Mobile overlay */}
       {mobileOpen && (
         <div
+          aria-hidden="true"
           className="fixed inset-0 z-40 bg-black/40 lg:hidden"
           onClick={closeMobile}
         />
