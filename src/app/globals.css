@@ -32,6 +32,9 @@
   --color-trace-900: #17401a;
   --color-trace-950: #07230b;
 
+  --color-leaf: #84843c;
+  --color-leaf-light: #d4d79a;
+
   --font-sans: var(--font-dm-sans), system-ui, sans-serif;
   --font-display: var(--font-playfair), Georgia, serif;
 
@@ -79,16 +82,11 @@
   }
 }
 
-::-webkit-scrollbar {
-  width: 6px;
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-muted-foreground) 35%, transparent) transparent;
 }
-::-webkit-scrollbar-track {
-  background: var(--color-muted);
-}
-::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--color-muted-foreground) 30%, transparent);
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in srgb, var(--color-muted-foreground) 50%, transparent);
+
+html {
+  scrollbar-width: none;
 }

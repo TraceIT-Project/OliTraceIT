@@ -218,15 +218,9 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-linear-to-r from-white via-white/95 to-white/40" />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:mb-24 lg:mt-10 lg:py-0">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-19.25 sm:px-6 lg:mb-31.25 lg:mt-17.25 lg:py-0">
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
-              <motion.div {...fadeUp}>
-                <span className="mb-8 inline-flex items-center rounded-full border border-trace-200 bg-trace-50 px-3 py-1 text-xs font-medium text-trace-700">
-                  <Leaf size={12} className="mr-1.5" /> Plataforma líder en trazabilidad oleícola
-                </span>
-              </motion.div>
-
               <motion.h1
                 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl"
                 {...fadeUp}

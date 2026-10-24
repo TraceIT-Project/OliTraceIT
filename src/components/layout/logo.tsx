@@ -28,7 +28,8 @@ export function Logo({ className, size = "default", inverted = false, textClassN
         preload
       />
       <span className={cn("font-sans font-bold tracking-tight", s.text, textClassName)}>
-        <span className={inverted ? "text-white" : "text-gray-900"}>OliTrace</span>
+        <span className={inverted ? "text-leaf-light" : "text-leaf"}>Oli</span>
+        <span className={inverted ? "text-white" : "text-gray-900"}>Trace</span>
         <span className={inverted ? "text-trace-200" : "text-trace-700"}>IT</span>
       </span>
     </span>
