@@ -1,246 +1,166 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { X, Eye, EyeOff, Leaf, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import Image from "next/image"
+import { Modal } from "@/components/ui/modal"
+import { Logo } from "@/components/layout/logo"
+import { userProfile } from "@/lib/mock-data"
+
+export type AuthMode = "login" | "register"
 
 interface AuthModalProps {
   isOpen: boolean
   onClose: () => void
-  initialMode?: "login" | "register"
+  mode: AuthMode
+  onModeChange: (mode: AuthMode) => void
 }
 
-export function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalProps) {
+const DEMO_PASSWORD = "OliTraceIT2026!"
+
+const inputClass = "w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 focus:border-transparent focus:outline-hidden focus:ring-2 focus:ring-trace-500"
+const labelClass = "mb-1.5 block text-xs font-medium text-gray-500"
+
+export function AuthModal({ isOpen, onClose, mode, onModeChange }: AuthModalProps) {
   const router = useRouter()
-  const [mode, setMode] = useState<"login" | "register">(initialMode)
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-
-  // Sync mode when initialMode changes
-  useEffect(() => {
-    setMode(initialMode)
-  }, [initialMode])
-
-  // Pre-filled demo data
-  const loginData = {
-    email: "antonio.lopez@fincaelolivar.es",
-    password: "TraceIT2026!",
-  }
-
-  const registerData = {
-    nombre: "Antonio",
-    apellidos: "López García",
-    email: "antonio.lopez@fincaelolivar.es",
-    empresa: "Finca El Olivar S.L.",
-    telefono: "+34 654 321 098",
-    password: "TraceIT2026!",
-    passwordConfirm: "TraceIT2026!",
-  }
+  const isLogin = mode === "login"
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    // Simulate login/register
-    setTimeout(() => {
-      setIsLoading(false)
-      router.push("/overview")
-    }, 800)
+    setTimeout(() => router.push("/overview"), 800)
   }
 
-  if (!isOpen) return null
-
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
-
-      {/* Modal */}
-      <div className="relative z-10 w-full max-w-md mx-4 rounded-2xl bg-white shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
-        {/* Header with green accent */}
-        <div className="bg-gradient-to-r from-trace-700 to-trace-600 px-6 py-4 text-white flex-shrink-0">
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 rounded-full p-1 text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-          >
-            <X size={20} />
-          </button>
-
-          <div className="flex items-center gap-1 mb-2">
-            <Image src="/logo.png" alt="TRACE IT" width={32} height={32} className="brightness-0 invert" />
-            <div className="flex items-baseline gap-0.5">
-              <span className="text-lg font-bold">TRACE IT</span>
-            </div>
+    <Modal isOpen={isOpen} onClose={onClose} className="overflow-hidden">
+      {(titleId) => (
+        <>
+          <div className="relative bg-linear-to-r from-trace-700 to-trace-600 px-6 py-4 text-white">
+            <button
+              onClick={onClose}
+              aria-label="Cerrar"
+              className="absolute right-4 top-4 rounded-full p-1 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+            >
+              <X size={20} />
+            </button>
+            <Logo size="sm" inverted className="mb-2" />
+            <h2 id={titleId} className="font-sans text-xl font-bold">
+              {isLogin ? "Iniciar Sesión" : "Crear Cuenta"}
+            </h2>
+            <p className="mt-1 text-sm text-white/80">
+              {isLogin
+                ? "Accede a tu panel de trazabilidad oleícola"
+                : "Regístrate y empieza tu prueba gratuita de 30 días"}
+            </p>
           </div>
-          <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--font-sans)' }}>
-            {mode === "login" ? "Iniciar Sesión" : "Crear Cuenta"}
-          </h2>
-          <p className="text-sm text-white/80 mt-1">
-            {mode === "login"
-              ? "Accede a tu panel de trazabilidad oleícola"
-              : "Regístrate y empieza tu prueba gratuita de 30 días"
-            }
-          </p>
-        </div>
 
-        {/* Scrollable body */}
-        <div className="overflow-y-auto flex-1">
-
-          {/* Demo banner */}
-          <div className="mx-6 mt-4 rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 flex items-start gap-2">
-            <Leaf size={14} className="text-amber-600 mt-0.5 flex-shrink-0" />
+          <div className="mx-6 mt-4 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2">
+            <Leaf size={14} className="mt-0.5 shrink-0 text-amber-600" />
             <p className="text-xs text-amber-700">
               <strong>Modo Demo:</strong> Los datos ya están rellenados. Solo pulsa el botón para acceder al panel.
             </p>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
-            {mode === "register" && (
-              <div className="grid grid-cols-2 gap-3">
+          <form onSubmit={handleSubmit} className="space-y-4 p-6">
+            {!isLogin && (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div>
-                  <label className="text-xs font-medium text-gray-500 mb-1.5 block">Nombre</label>
-                  <input
-                    type="text"
-                    defaultValue={registerData.nombre}
-                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-trace-500 focus:border-transparent"
-                  />
+                  <label htmlFor="auth-nombre" className={labelClass}>Nombre</label>
+                  <input id="auth-nombre" type="text" autoComplete="given-name" defaultValue={userProfile.nombre} className={inputClass} />
                 </div>
                 <div>
-                  <label className="text-xs font-medium text-gray-500 mb-1.5 block">Apellidos</label>
-                  <input
-                    type="text"
-                    defaultValue={registerData.apellidos}
-                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-trace-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-            )}
-
-            {mode === "register" && (
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs font-medium text-gray-500 mb-1.5 block">Empresa</label>
-                  <input
-                    type="text"
-                    defaultValue={registerData.empresa}
-                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-trace-500 focus:border-transparent"
-                  />
+                  <label htmlFor="auth-apellidos" className={labelClass}>Apellidos</label>
+                  <input id="auth-apellidos" type="text" autoComplete="family-name" defaultValue={userProfile.apellidos} className={inputClass} />
                 </div>
                 <div>
-                  <label className="text-xs font-medium text-gray-500 mb-1.5 block">Teléfono</label>
-                  <input
-                    type="tel"
-                    defaultValue={registerData.telefono}
-                    className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-trace-500 focus:border-transparent"
-                  />
+                  <label htmlFor="auth-empresa" className={labelClass}>Empresa</label>
+                  <input id="auth-empresa" type="text" autoComplete="organization" defaultValue={userProfile.empresa} className={inputClass} />
+                </div>
+                <div>
+                  <label htmlFor="auth-telefono" className={labelClass}>Teléfono</label>
+                  <input id="auth-telefono" type="tel" autoComplete="tel" defaultValue={userProfile.telefono} className={inputClass} />
                 </div>
               </div>
             )}
 
             <div>
-              <label className="text-xs font-medium text-gray-500 mb-1.5 block">Correo electrónico</label>
-              <input
-                type="email"
-                defaultValue={loginData.email}
-                className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-trace-500 focus:border-transparent"
-              />
+              <label htmlFor="auth-email" className={labelClass}>Correo electrónico</label>
+              <input id="auth-email" type="email" autoComplete="email" defaultValue={userProfile.email} className={inputClass} />
             </div>
 
             <div>
-              <label className="text-xs font-medium text-gray-500 mb-1.5 block">Contraseña</label>
+              <label htmlFor="auth-password" className={labelClass}>Contraseña</label>
               <div className="relative">
                 <input
+                  id="auth-password"
                   type={showPassword ? "text" : "password"}
-                  defaultValue={loginData.password}
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 pr-10 focus:outline-none focus:ring-2 focus:ring-trace-500 focus:border-transparent"
+                  autoComplete={isLogin ? "current-password" : "new-password"}
+                  defaultValue={DEMO_PASSWORD}
+                  className={`${inputClass} pr-10`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-600"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
 
-            {mode === "register" && (
+            {!isLogin && (
               <div>
-                <label className="text-xs font-medium text-gray-500 mb-1.5 block">Confirmar contraseña</label>
-                <input
-                  type="password"
-                  defaultValue={registerData.passwordConfirm}
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-trace-500 focus:border-transparent"
-                />
+                <label htmlFor="auth-password-confirm" className={labelClass}>Confirmar contraseña</label>
+                <input id="auth-password-confirm" type="password" autoComplete="new-password" defaultValue={DEMO_PASSWORD} className={inputClass} />
               </div>
             )}
 
-            {mode === "login" && (
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 text-xs text-gray-500 cursor-pointer">
-                  <input type="checkbox" defaultChecked className="rounded border-gray-300 text-trace-600 focus:ring-trace-500" />
+            {isLogin ? (
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label className="flex cursor-pointer items-center gap-2 text-xs text-gray-500">
+                  <input type="checkbox" defaultChecked className="rounded-sm border-gray-300 text-trace-600 focus:ring-trace-500" />
                   Recordarme
                 </label>
-                <a href="#" className="text-xs text-trace-600 hover:text-trace-700 font-medium">
+                <a href="#" className="text-xs font-medium text-trace-600 hover:text-trace-700">
                   ¿Olvidaste tu contraseña?
                 </a>
               </div>
-            )}
-
-            {mode === "register" && (
-              <label className="flex items-start gap-2 text-xs text-gray-500 cursor-pointer">
-                <input type="checkbox" defaultChecked className="rounded border-gray-300 text-trace-600 focus:ring-trace-500 mt-0.5" />
+            ) : (
+              <label className="flex cursor-pointer items-start gap-2 text-xs text-gray-500">
+                <input type="checkbox" defaultChecked className="mt-0.5 rounded-sm border-gray-300 text-trace-600 focus:ring-trace-500" />
                 <span>Acepto los <a href="#" className="text-trace-600 underline">términos y condiciones</a> y la <a href="#" className="text-trace-600 underline">política de privacidad</a></span>
               </label>
             )}
 
-            <Button
-              type="submit"
-              className="w-full h-12 text-sm font-semibold gap-2"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="h-12 w-full gap-2 text-sm font-semibold" disabled={isLoading}>
               {isLoading ? (
-                <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" aria-label="Cargando" />
               ) : (
                 <>
-                  {mode === "login" ? "Iniciar Sesión" : "Crear Cuenta Gratis"}
+                  {isLogin ? "Iniciar Sesión" : "Crear Cuenta Gratis"}
                   <ArrowRight size={16} />
                 </>
               )}
             </Button>
           </form>
 
-          {/* Switch mode */}
-          <div className="border-t px-6 py-4 text-center bg-gray-50">
-            {mode === "login" ? (
-              <p className="text-sm text-gray-500">
-                ¿No tienes cuenta?{" "}
-                <button
-                  onClick={() => setMode("register")}
-                  className="font-semibold text-trace-600 hover:text-trace-700"
-                >
-                  Regístrate gratis
-                </button>
-              </p>
-            ) : (
-              <p className="text-sm text-gray-500">
-                ¿Ya tienes cuenta?{" "}
-                <button
-                  onClick={() => setMode("login")}
-                  className="font-semibold text-trace-600 hover:text-trace-700"
-                >
-                  Inicia sesión
-                </button>
-              </p>
-            )}
+          <div className="border-t bg-gray-50 px-6 py-4 text-center">
+            <p className="text-sm text-gray-500">
+              {isLogin ? "¿No tienes cuenta?" : "¿Ya tienes cuenta?"}{" "}
+              <button
+                onClick={() => onModeChange(isLogin ? "register" : "login")}
+                className="font-semibold text-trace-600 hover:text-trace-700"
+              >
+                {isLogin ? "Regístrate gratis" : "Inicia sesión"}
+              </button>
+            </p>
           </div>
-        </div>{/* end scrollable body */}
-      </div>
-    </div>
+        </>
+      )}
+    </Modal>
   )
 }

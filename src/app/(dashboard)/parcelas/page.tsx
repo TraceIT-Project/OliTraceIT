@@ -20,27 +20,24 @@ export default function ParcelasPage() {
   const [selectedParcela, setSelectedParcela] = useState(parcelas[0])
   const [showAllCampanas, setShowAllCampanas] = useState(false)
 
-  const parcelaEvents = eventosAgricolas.filter(
-    (e) => e.parcelaId === selectedParcela.id
-  )
+  const parcelaEvents = eventosAgricolas.filter((e) => e.parcelaId === selectedParcela.id)
+  const visibleCampanas = showAllCampanas ? resumenCampanas : resumenCampanas.slice(0, CAMPANAS_PREVIEW)
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-display)' }}>
-            Panel de Identidad Digital de Parcela
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Historial agronómico acumulativo y evolución productiva
-          </p>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">
+          Panel de Identidad Digital de Parcela
+        </h1>
+        <p className="text-sm text-gray-500 mt-1">
+          Historial agronómico acumulativo y evolución productiva
+        </p>
       </div>
 
-      {/* Parcela selector — select on mobile, pills on sm+ */}
+      {/* Selector de parcela: desplegable en móvil, botones a partir de sm */}
       <select
-        className="sm:hidden w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-trace-500/20"
+        aria-label="Parcela"
+        className="sm:hidden w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 focus:outline-hidden focus:ring-2 focus:ring-trace-500/20"
         value={selectedParcela.id}
         onChange={(e) => {
           const found = parcelas.find((p) => p.id === e.target.value)
@@ -58,7 +55,7 @@ export default function ParcelasPage() {
             key={p.id}
             onClick={() => setSelectedParcela(p)}
             className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-all whitespace-nowrap ${selectedParcela.id === p.id
-              ? "border-trace-300 bg-trace-50 text-trace-700 shadow-sm"
+              ? "border-trace-300 bg-trace-50 text-trace-700 shadow-xs"
               : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
               }`}
           >
@@ -68,22 +65,18 @@ export default function ParcelasPage() {
         ))}
       </div>
 
-      {/* Parcela Identity */}
       <div className="rounded-xl border bg-white p-4 sm:p-5">
-        <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 truncate">
+        <h2 className="mb-4 text-base font-semibold text-gray-900 sm:truncate sm:text-lg">
           Identidad Digital · {selectedParcela.nombre}
         </h2>
 
-        {/* Row 1: Info + Map | Timeline */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left: Score + Details + Map */}
           <div className="space-y-4">
-            {/* Score */}
             <Card className="border-trace-100 bg-trace-50/30">
               <CardContent className="p-4">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <span className="text-sm font-medium text-gray-700">Score de Calidad de Información</span>
-                  <div className="flex items-center gap-1.5 flex-shrink-0">
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <Award size={16} className="text-amber-500" />
                     <span className="text-sm font-semibold text-trace-700">{selectedParcela.scoreCalidad}% Completado</span>
                   </div>
@@ -92,28 +85,26 @@ export default function ParcelasPage() {
               </CardContent>
             </Card>
 
-            {/* Details */}
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-lg border p-3">
-                <p className="text-xs text-gray-400 mb-1">Ubicación</p>
+                <p className="text-xs text-gray-500 mb-1">Ubicación</p>
                 <p className="text-sm font-medium text-gray-900">{selectedParcela.ubicacion}</p>
                 <p className="text-xs text-gray-500">(SIGPAC {selectedParcela.sigpac})</p>
               </div>
               <div className="rounded-lg border p-3">
-                <p className="text-xs text-gray-400 mb-1">Superficie</p>
+                <p className="text-xs text-gray-500 mb-1">Superficie</p>
                 <p className="text-sm font-medium text-gray-900">{selectedParcela.superficie.toLocaleString('es-ES')} ha</p>
               </div>
               <div className="rounded-lg border p-3">
-                <p className="text-xs text-gray-400 mb-1">Variedad</p>
+                <p className="text-xs text-gray-500 mb-1">Variedad</p>
                 <p className="text-sm font-medium text-gray-900">{selectedParcela.variedad}</p>
               </div>
               <div className="rounded-lg border p-3">
-                <p className="text-xs text-gray-400 mb-1">Año de Plantación</p>
+                <p className="text-xs text-gray-500 mb-1">Año de Plantación</p>
                 <p className="text-sm font-medium text-gray-900">{selectedParcela.anoPlantacion}</p>
               </div>
             </div>
 
-            {/* Map */}
             <div className="rounded-lg border overflow-hidden h-[300px] sm:h-[320px] relative bg-[#d4e7c5]">
               <svg viewBox="0 0 500 300" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
                 <defs>
@@ -161,9 +152,9 @@ export default function ParcelasPage() {
                 <path d="M400,80 L470,90 L490,190 L400,200 Z" fill="#7aa65e" opacity="0.25" stroke="#5c8c42" strokeWidth="1" strokeDasharray="4,3" />
                 <path d="M60,200 L10,180 L5,260 L120,260 Z" fill="#7aa65e" opacity="0.25" stroke="#5c8c42" strokeWidth="1" strokeDasharray="4,3" />
               </svg>
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-4">
+              <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/50 to-transparent p-4">
                 <div className="flex items-center gap-2 text-white">
-                  <MapPin size={16} className="flex-shrink-0" />
+                  <MapPin size={16} className="shrink-0" />
                   <div>
                     <p className="text-sm font-semibold">{selectedParcela.nombre}</p>
                     <p className="text-xs text-white/80">
@@ -172,13 +163,12 @@ export default function ParcelasPage() {
                   </div>
                 </div>
               </div>
-              <div className="absolute top-3 right-3 rounded-lg bg-white/90 backdrop-blur-sm px-2.5 py-1.5 text-xs font-medium text-trace-700 shadow-sm">
+              <div className="absolute top-3 right-3 rounded-lg bg-white/90 backdrop-blur-xs px-2.5 py-1.5 text-xs font-medium text-trace-700 shadow-xs">
                 Vista catastral
               </div>
             </div>
           </div>
 
-          {/* Right: Timeline */}
           <Card className="flex flex-col">
             <CardHeader className="pb-2 mb-2">
               <CardTitle>Línea Temporal de Eventos Oleícolas</CardTitle>
@@ -189,9 +179,7 @@ export default function ParcelasPage() {
           </Card>
         </div>
 
-        {/* Row 2: Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-          {/* Health indicators */}
           <Card>
             <CardHeader className="pb-2 mb-2">
               <CardTitle>Indicadores de Salud (Últimos 12 Meses)</CardTitle>
@@ -219,7 +207,6 @@ export default function ParcelasPage() {
             </CardContent>
           </Card>
 
-          {/* Producción interanual */}
           <Card>
             <CardHeader className="pb-2">
               <CardTitle>Evolución Productiva (Comparativa Interanual)</CardTitle>
@@ -231,10 +218,10 @@ export default function ParcelasPage() {
                   <XAxis dataKey="year" tick={{ fontSize: 10 }} stroke="#999" />
                   <Tooltip
                     contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12 }}
-                    formatter={(v: number) => [`${formatNumber(v)} kg`, "Producción"]}
+                    formatter={(v) => [`${formatNumber(Number(v))} kg`, "Producción"]}
                   />
                   <Bar dataKey="produccion" fill="#1c611f" radius={[4, 4, 0, 0]}>
-                    <LabelList dataKey="produccion" position="top" formatter={(v: number) => `${formatNumber(v)} kg`} style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }} />
+                    <LabelList dataKey="produccion" position="top" formatter={(v) => `${formatNumber(Number(v))} kg`} style={{ fontSize: 9, fill: "#374151", fontWeight: 600 }} />
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
@@ -243,88 +230,80 @@ export default function ParcelasPage() {
         </div>
       </div>
 
-      {/* Resumen de campañas */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>Resumen de Campañas Asociadas</span>
+          <CardTitle>
+            Resumen de Campañas Asociadas
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {(() => {
-            const visible = showAllCampanas ? resumenCampanas : resumenCampanas.slice(0, CAMPANAS_PREVIEW)
-            return (
-              <>
-                {/* Mobile: card list */}
-                <div className="sm:hidden space-y-3">
-                  {visible.map((c) => (
-                    <div key={c.campana} className="rounded-lg border p-4 space-y-2">
-                      <p className="text-sm font-semibold text-gray-900">Campaña {c.campana}</p>
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
-                        <div>
-                          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Producción</p>
-                          <p className="text-sm font-medium text-gray-800">{c.produccion}</p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Rend. Graso</p>
-                          <p className="text-sm font-medium text-gray-800">{c.rendimientoGraso}</p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Aceite Obtenido</p>
-                          <p className="text-sm font-medium text-trace-700">{c.aceiteObtenido}</p>
-                        </div>
-                        <div>
-                          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Beneficio Est.</p>
-                          <p className="text-sm font-medium text-emerald-700">{c.beneficioEstimado}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+          {/* Móvil: tarjetas */}
+          <div className="sm:hidden space-y-3">
+            {visibleCampanas.map((c) => (
+              <div key={c.campana} className="rounded-lg border p-4 space-y-2">
+                <p className="text-sm font-semibold text-gray-900">Campaña {c.campana}</p>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+                  <div>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-wide">Producción</p>
+                    <p className="text-sm font-medium text-gray-800">{c.produccion}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-wide">Rend. Graso</p>
+                    <p className="text-sm font-medium text-gray-800">{c.rendimientoGraso}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-wide">Aceite Obtenido</p>
+                    <p className="text-sm font-medium text-trace-700">{c.aceiteObtenido}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-wide">Beneficio Est.</p>
+                    <p className="text-sm font-medium text-emerald-700">{c.beneficioEstimado}</p>
+                  </div>
                 </div>
+              </div>
+            ))}
+          </div>
 
-                {/* Desktop: table */}
-                <div className="hidden sm:block overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="pb-3 text-left font-medium text-gray-500">Campaña</th>
-                        <th className="pb-3 text-right font-medium text-gray-500">Producción</th>
-                        <th className="pb-3 text-right font-medium text-gray-500">Rend. Graso</th>
-                        <th className="pb-3 text-right font-medium text-gray-500">Aceite Obtenido</th>
-                        <th className="pb-3 text-right font-medium text-gray-500">Beneficio Est.</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {visible.map((c) => (
-                        <tr key={c.campana} className="border-b last:border-0 hover:bg-gray-50 transition-colors">
-                          <td className="py-3 font-medium text-gray-700">Campaña {c.campana}</td>
-                          <td className="py-3 text-right text-gray-700">{c.produccion}</td>
-                          <td className="py-3 text-right text-gray-700">{c.rendimientoGraso}</td>
-                          <td className="py-3 text-right font-medium text-trace-700">{c.aceiteObtenido}</td>
-                          <td className="py-3 text-right font-medium text-emerald-700">{c.beneficioEstimado}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+          {/* sm+: tabla */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b">
+                  <th className="pb-3 text-left font-medium text-gray-500">Campaña</th>
+                  <th className="pb-3 text-right font-medium text-gray-500">Producción</th>
+                  <th className="pb-3 text-right font-medium text-gray-500">Rend. Graso</th>
+                  <th className="pb-3 text-right font-medium text-gray-500">Aceite Obtenido</th>
+                  <th className="pb-3 text-right font-medium text-gray-500">Beneficio Est.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {visibleCampanas.map((c) => (
+                  <tr key={c.campana} className="border-b last:border-0 hover:bg-gray-50 transition-colors">
+                    <td className="py-3 font-medium text-gray-700">Campaña {c.campana}</td>
+                    <td className="py-3 text-right text-gray-700">{c.produccion}</td>
+                    <td className="py-3 text-right text-gray-700">{c.rendimientoGraso}</td>
+                    <td className="py-3 text-right font-medium text-trace-700">{c.aceiteObtenido}</td>
+                    <td className="py-3 text-right font-medium text-emerald-700">{c.beneficioEstimado}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-                <div className="mt-4 text-center">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowAllCampanas((v) => !v)}
-                    className="text-trace-600 border-trace-200 hover:bg-trace-50 gap-1.5"
-                  >
-                    {showAllCampanas ? (
-                      <><ChevronUp size={14} /> Ver menos</>
-                    ) : (
-                      <><ChevronDown size={14} /> Ver historial completo ({resumenCampanas.length - CAMPANAS_PREVIEW} campañas más)</>
-                    )}
-                  </Button>
-                </div>
-              </>
-            )
-          })()}
+          <div className="mt-4 text-center">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAllCampanas((v) => !v)}
+              className="text-trace-600 border-trace-200 hover:bg-trace-50 gap-1.5"
+            >
+              {showAllCampanas ? (
+                <><ChevronUp size={14} /> Ver menos</>
+              ) : (
+                <><ChevronDown size={14} /> Ver historial completo ({resumenCampanas.length - CAMPANAS_PREVIEW} campañas más)</>
+              )}
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

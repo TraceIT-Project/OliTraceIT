@@ -9,14 +9,13 @@ import {
 } from "@/lib/mock-data"
 import { formatDate } from "@/lib/utils"
 import {
-  CheckCircle2, Smartphone,
-  Shield, Droplets, Scissors, Sprout, Bug
+  CheckCircle2, ChevronDown, Smartphone, Shield, Droplets, Scissors, Sprout, Bug, type LucideIcon,
 } from "lucide-react"
 import {
   BarChart, Bar, XAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, LabelList,
 } from "recharts"
 
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, LucideIcon> = {
   "Tratamiento Fitosanitario": Shield,
   "Riego": Droplets,
   "Poda": Scissors,
@@ -25,6 +24,11 @@ const iconMap: Record<string, any> = {
   "Control de Plagas": Bug,
 }
 
+const barColors = ["#1c611f", "#2d8f2d", "#55b455", "#b9e5b9"]
+
+const inputClass = "w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm focus:border-trace-300 focus:outline-hidden focus:ring-2 focus:ring-trace-500/20"
+const labelClass = "mb-1.5 block text-sm font-medium text-gray-700"
+
 export default function ActividadesPage() {
   const [tipoActividad, setTipoActividad] = useState("Tratamiento Fitosanitario")
   const [fecha, setFecha] = useState("2026-02-25")
@@ -32,158 +36,135 @@ export default function ActividadesPage() {
   const [producto, setProducto] = useState("Dimetoato 40 EC")
   const [dosis, setDosis] = useState("1,5")
   const [plazoSeguridad, setPlazoSeguridad] = useState("7")
+  const [saved, setSaved] = useState(false)
 
   const toggleParcela = (id: string) => {
-    setParcelasSeleccionadas(prev =>
-      prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]
+    setParcelasSeleccionadas((prev) =>
+      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id]
     )
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setSaved(true)
+    setTimeout(() => setSaved(false), 3000)
   }
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-display)' }}>
-            Registro de Actividad Oleícola
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Registra tratamientos, riegos, podas y demás actividades de tus parcelas
-          </p>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Registro de Actividad Oleícola</h1>
+        <p className="mt-1 text-sm text-gray-500">
+          Registra tratamientos, riegos, podas y demás actividades de tus parcelas
+        </p>
       </div>
 
-      <div className="grid lg:grid-cols-[1fr,1fr] gap-6">
-        {/* Form */}
+      <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Nuevo Registro de Actividad</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-5">
-            {/* Tipo actividad */}
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1.5 block">Tipo de Actividad</label>
-              <select
-                value={tipoActividad}
-                onChange={(e) => setTipoActividad(e.target.value)}
-                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-trace-500/20 focus:border-trace-300"
-              >
-                {tiposActividad.map((t) => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Fecha */}
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1.5 block">Fecha</label>
-              <div className="relative">
-                <input
-                  type="date"
-                  value={fecha}
-                  onChange={(e) => setFecha(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-trace-500/20 focus:border-trace-300"
-                />
-              </div>
-            </div>
-
-            {/* Parcelas */}
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1.5 block">Parcela(s) Afectada(s)</label>
-              <div className="space-y-2">
-                {parcelas.map((p) => (
-                  <label key={p.id} className="flex items-center gap-2.5 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={parcelasSeleccionadas.includes(p.id)}
-                      onChange={() => toggleParcela(p.id)}
-                      className="h-4 w-4 rounded border-gray-300 text-trace-600 focus:ring-trace-500"
-                    />
-                    <span className="text-sm text-gray-700">{p.nombre}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* Producto */}
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1.5 block">Producto Aplicado</label>
-              <div className="relative">
-                <select
-                  value={producto}
-                  onChange={(e) => setProducto(e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-trace-500/20 focus:border-trace-300 appearance-none"
-                >
-                  {productosFrecuentes.map((p) => (
-                    <option key={p} value={p}>{p}</option>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label htmlFor="act-tipo" className={labelClass}>Tipo de Actividad</label>
+                <select id="act-tipo" value={tipoActividad} onChange={(e) => setTipoActividad(e.target.value)} className={inputClass}>
+                  {tiposActividad.map((t) => (
+                    <option key={t} value={t}>{t}</option>
                   ))}
                 </select>
-                <CheckCircle2 size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-trace-500" />
               </div>
-            </div>
 
-            {/* Dosis */}
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1.5 block">Dosis</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={dosis}
-                  onChange={(e) => setDosis(e.target.value)}
-                  className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-trace-500/20 focus:border-trace-300"
-                />
-                <div className="flex items-center rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-500">
-                  L/ha
+              <div>
+                <label htmlFor="act-fecha" className={labelClass}>Fecha</label>
+                <input id="act-fecha" type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} className={inputClass} />
+              </div>
+
+              <fieldset>
+                <legend className={labelClass}>Parcela(s) Afectada(s)</legend>
+                <div className="space-y-2">
+                  {parcelas.map((p) => (
+                    <label key={p.id} className="flex cursor-pointer items-center gap-2.5">
+                      <input
+                        type="checkbox"
+                        checked={parcelasSeleccionadas.includes(p.id)}
+                        onChange={() => toggleParcela(p.id)}
+                        className="h-4 w-4 rounded-sm border-gray-300 accent-trace-600"
+                      />
+                      <span className="text-sm text-gray-700">{p.nombre}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <div>
+                <label htmlFor="act-producto" className={labelClass}>Producto Aplicado</label>
+                <div className="relative">
+                  <select
+                    id="act-producto"
+                    value={producto}
+                    onChange={(e) => setProducto(e.target.value)}
+                    className={`${inputClass} appearance-none pr-9`}
+                  >
+                    {productosFrecuentes.map((p) => (
+                      <option key={p} value={p}>{p}</option>
+                    ))}
+                  </select>
+                  <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500" />
                 </div>
               </div>
-            </div>
 
-            {/* Plazo seguridad */}
-            <div>
-              <label className="text-sm font-medium text-gray-700 mb-1.5 block">Plazo de Seguridad</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={plazoSeguridad}
-                  onChange={(e) => setPlazoSeguridad(e.target.value)}
-                  className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-trace-500/20 focus:border-trace-300"
-                />
-                <div className="flex items-center rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-500">
-                  días
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="act-dosis" className={labelClass}>Dosis</label>
+                  <div className="flex gap-2">
+                    <input id="act-dosis" type="text" inputMode="decimal" value={dosis} onChange={(e) => setDosis(e.target.value)} className={`${inputClass} min-w-0 flex-1`} />
+                    <span className="flex items-center rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-500">L/ha</span>
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="act-plazo" className={labelClass}>Plazo de Seguridad</label>
+                  <div className="flex gap-2">
+                    <input id="act-plazo" type="text" inputMode="numeric" value={plazoSeguridad} onChange={(e) => setPlazoSeguridad(e.target.value)} className={`${inputClass} min-w-0 flex-1`} />
+                    <span className="flex items-center rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-500">días</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Buttons */}
-            <div className="space-y-3 pt-2">
-              <Button className="w-full h-11 text-sm font-semibold uppercase tracking-wide">
-                Guardar Registro
-              </Button>
-              <Button variant="outline" className="w-full h-11 text-sm font-semibold uppercase tracking-wide border-trace-200 text-trace-700 hover:bg-trace-50">
-                <Smartphone size={16} className="mr-2" />
-                Cargar desde Móvil
-              </Button>
-            </div>
+              <div className="space-y-3 pt-2">
+                <Button type="submit" className="h-11 w-full text-sm font-semibold uppercase tracking-wide">
+                  Guardar Registro
+                </Button>
+                <Button type="button" variant="outline" className="h-11 w-full gap-2 border-trace-200 text-sm font-semibold uppercase tracking-wide text-trace-700 hover:bg-trace-50">
+                  <Smartphone size={16} />
+                  Cargar desde Móvil
+                </Button>
+              </div>
+              {saved && (
+                <p role="status" className="flex items-center justify-center gap-2 rounded-lg border border-trace-200 bg-trace-50 px-3 py-2 text-sm text-trace-700">
+                  <CheckCircle2 size={16} /> Registro guardado correctamente
+                </p>
+              )}
+            </form>
           </CardContent>
         </Card>
 
-        {/* Right: Stats + Recent */}
         <div className="space-y-6">
-          {/* Resumen campaña */}
           <Card>
             <CardHeader>
               <CardTitle>Resumen de Campaña en Curso (2026)</CardTitle>
             </CardHeader>
             <CardContent>
-              <h4 className="text-sm font-semibold text-gray-700 mb-3">Actividades por Tipo</h4>
+              <h4 className="mb-3 text-sm font-semibold text-gray-700">Actividades por Tipo</h4>
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={actividadesPorTipo} margin={{ top: 20, right: 10, left: 10, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                  <XAxis dataKey="tipo" tick={{ fontSize: 10 }} stroke="#999" />
-                  <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12 }} />
-                  <Bar dataKey="cantidad" radius={[4, 4, 0, 0]}>
+                  <XAxis dataKey="tipo" tick={{ fontSize: 11 }} stroke="#999" interval={0} tickFormatter={(t: string) => t.split(" ")[0]} />
+                  <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e5e7eb", fontSize: 12 }} />
+                  <Bar dataKey="cantidad" name="Actividades" radius={[4, 4, 0, 0]}>
                     <LabelList dataKey="cantidad" position="top" style={{ fontSize: 11, fill: "#374151", fontWeight: 600 }} />
-                    {actividadesPorTipo.map((_, i) => (
-                      <Cell key={i} fill={i === 0 ? "#1c611f" : i === 1 ? "#2d8f2d" : i === 2 ? "#55b455" : "#b9e5b9"} />
+                    {actividadesPorTipo.map((a, i) => (
+                      <Cell key={a.tipo} fill={barColors[i % barColors.length]} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -191,7 +172,6 @@ export default function ActividadesPage() {
             </CardContent>
           </Card>
 
-          {/* Actividades recientes */}
           <Card>
             <CardHeader>
               <CardTitle>Actividades Recientes</CardTitle>
@@ -199,19 +179,19 @@ export default function ActividadesPage() {
             <CardContent>
               <div className="space-y-3">
                 {actividades.slice(0, 5).map((a) => {
-                  const Icon = iconMap[a.tipo] || Shield
+                  const Icon = iconMap[a.tipo] ?? Shield
                   return (
                     <div key={a.id} className="flex items-start gap-3 rounded-lg bg-gray-50 p-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border text-trace-600 flex-shrink-0">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border bg-white text-trace-600">
                         <Icon size={14} />
                       </div>
-                      <div className="flex-1 min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="text-sm text-gray-900">
                           <span className="font-medium">{formatDate(a.fecha)}</span> - {a.tipo}
                           {a.producto ? ` (${a.producto})` : ""}
-                          {a.dosis ? ` - ${a.dosis.toLocaleString('es-ES')} ${a.unidad}` : ""}
+                          {a.dosis ? ` - ${a.dosis.toLocaleString("es-ES")} ${a.unidad}` : ""}
                         </p>
-                        <p className="text-xs text-gray-500 mt-0.5">{a.parcelaNombre}</p>
+                        <p className="mt-0.5 text-xs text-gray-500">{a.parcelaNombre}</p>
                       </div>
                     </div>
                   )

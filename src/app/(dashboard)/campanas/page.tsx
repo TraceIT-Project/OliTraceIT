@@ -4,25 +4,20 @@ import { useState } from "react"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { GaugeChart } from "@/components/charts/gauge-chart"
-import { ndviData, insumosAplicados, campanas, parcelas } from "@/lib/mock-data"
+import { ndviData, insumosAplicados, campanas, parcelas, lluviaData, CAMPANA_ACTUAL } from "@/lib/mock-data"
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Legend,
 } from "recharts"
 
-const lluviaChartData = [
-  { periodo: "2026", actual: 250, media: 300 },
-  { periodo: "Media", actual: 180, media: 250 },
-]
-
 export default function CampanasPage() {
-  const [selectedCampana, setSelectedCampana] = useState("C-2026")
+  const [selectedCampana, setSelectedCampana] = useState(CAMPANA_ACTUAL)
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-display)' }}>
+          <h1 className="text-2xl font-bold text-gray-900">
             Vista de Campaña Oleícola
           </h1>
           <p className="text-sm text-gray-500 mt-1">
@@ -33,7 +28,7 @@ export default function CampanasPage() {
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500">Filtro:</span>
             <Select value={selectedCampana} onValueChange={setSelectedCampana}>
-              <SelectTrigger>
+              <SelectTrigger aria-label="Campaña">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -44,7 +39,7 @@ export default function CampanasPage() {
             </Select>
           </div>
           <Select>
-            <SelectTrigger className="max-w-[150px]">
+            <SelectTrigger className="max-w-[180px]" aria-label="Parcela">
               <SelectValue placeholder="Todas las Parcelas" />
             </SelectTrigger>
             <SelectContent>
@@ -57,14 +52,12 @@ export default function CampanasPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:items-stretch">
-        {/* Left: Evolución y Clima */}
         <div className="h-full">
           <div className="rounded-xl border bg-white p-1 h-full">
             <div className="px-4 pt-4 pb-2">
               <h2 className="text-lg font-semibold text-gray-900">Evolución y Clima (Campaña 2026)</h2>
             </div>
 
-            {/* NDVI */}
             <Card className="border-0 shadow-none">
               <CardHeader className="pb-1 pt-1 mb-2">
                 <CardTitle className="text-base">
@@ -94,7 +87,6 @@ export default function CampanasPage() {
               </CardContent>
             </Card>
 
-            {/* Lluvia */}
             <Card className="border-0 shadow-none">
               <CardHeader className="pb-1 pt-0 mb-2">
                 <CardTitle className="text-base">
@@ -103,14 +95,14 @@ export default function CampanasPage() {
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={lluviaChartData} barGap={4} margin={{ top: 5, right: 15, left: 0, bottom: 5 }}>
+                  <BarChart data={lluviaData} barGap={4} margin={{ top: 5, right: 15, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                     <XAxis dataKey="periodo" tick={{ fontSize: 11 }} stroke="#999" />
                     <YAxis tick={{ fontSize: 11 }} stroke="#999" width={35} />
                     <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid #e5e7eb', fontSize: 12 }} />
                     <Legend iconSize={10} wrapperStyle={{ fontSize: 11 }} />
                     <Bar dataKey="actual" name="2026" fill="#1c611f" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="media" name="Media" fill="#d1d5db" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="media" name="Media histórica" fill="#d1d5db" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -118,14 +110,12 @@ export default function CampanasPage() {
           </div>
         </div>
 
-        {/* Right: Resumen Producción */}
         <div className="h-full">
           <div className="rounded-xl border bg-white p-1 h-full">
             <div className="px-4 pt-4 pb-2">
               <h2 className="text-lg font-semibold text-gray-900">Resumen de Producción y Rendimiento</h2>
             </div>
 
-            {/* Insumos */}
             <Card className="border-0 shadow-none">
               <CardHeader className="pb-1 pt-2">
                 <CardTitle className="text-base">Resumen de Insumos Aplicados</CardTitle>
@@ -150,7 +140,6 @@ export default function CampanasPage() {
               </CardContent>
             </Card>
 
-            {/* Gauge */}
             <Card className="border-0 shadow-none">
               <CardHeader className="pb-1 pt-2 mb-1 mt-2">
                 <CardTitle className="text-base">

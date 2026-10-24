@@ -1,88 +1,94 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@plugin "@tailwindcss/typography";
 
-html {
-  scroll-behavior: smooth;
+@theme {
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(150 10% 15%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(150 10% 15%);
+  --color-primary: hsl(134 52% 34%);
+  --color-primary-foreground: hsl(0 0% 100%);
+  --color-secondary: hsl(60 15% 92%);
+  --color-secondary-foreground: hsl(150 10% 15%);
+  --color-muted: hsl(60 10% 96%);
+  --color-muted-foreground: hsl(150 5% 45%);
+  --color-accent: hsl(60 15% 92%);
+  --color-accent-foreground: hsl(150 10% 15%);
+  --color-border: hsl(60 10% 90%);
+  --color-input: hsl(60 10% 90%);
+  --color-ring: hsl(134 52% 34%);
+
+  --color-trace-50: #f0faf0;
+  --color-trace-100: #dbf2db;
+  --color-trace-200: #b9e5b9;
+  --color-trace-300: #88d088;
+  --color-trace-400: #55b455;
+  --color-trace-500: #2d8f2d;
+  --color-trace-600: #1f7a24;
+  --color-trace-700: #1c611f;
+  --color-trace-800: #1a4d1d;
+  --color-trace-900: #17401a;
+  --color-trace-950: #07230b;
+
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-display: var(--font-playfair), Georgia, serif;
+
+  --radius-lg: 0.625rem;
+  --radius-md: calc(0.625rem - 2px);
+  --radius-sm: calc(0.625rem - 4px);
 }
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 150 10% 15%;
-    --card: 0 0% 100%;
-    --card-foreground: 150 10% 15%;
-    --primary: 134 52% 34%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 60 15% 92%;
-    --secondary-foreground: 150 10% 15%;
-    --muted: 60 10% 96%;
-    --muted-foreground: 150 5% 45%;
-    --accent: 60 15% 92%;
-    --accent-foreground: 150 10% 15%;
-    --border: 60 10% 90%;
-    --input: 60 10% 90%;
-    --ring: 134 52% 34%;
-    --radius: 0.625rem;
-    --font-sans: 'DM Sans', system-ui, sans-serif;
-    --font-display: 'Playfair Display', Georgia, serif;
+  html {
+    scroll-behavior: smooth;
   }
-}
-
-@layer base {
-  * {
-    @apply border-border;
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-border);
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
     font-family: var(--font-sans);
   }
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     font-family: var(--font-display);
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-trace-500);
+    outline-offset: 2px;
   }
 }
 
-/* Custom scrollbar */
+@utility card-hover {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  &:hover {
+    box-shadow: 0 4px 20px rgb(0 0 0 / 0.08);
+    transform: translateY(-1px);
+  }
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
+  background: var(--color-muted);
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
+  background: color-mix(in srgb, var(--color-muted-foreground) 30%, transparent);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground) / 0.5);
-}
-
-/* Gauge chart */
-.gauge-container {
-  position: relative;
-  width: 200px;
-  height: 120px;
-  overflow: hidden;
-}
-
-/* Card hover */
-.card-hover {
-  transition: all 0.2s ease;
-}
-.card-hover:hover {
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  transform: translateY(-1px);
-}
-
-/* Status badges */
-.badge-success {
-  @apply bg-trace-50 text-trace-700 border border-trace-200;
-}
-.badge-warning {
-  @apply bg-amber-50 text-amber-700 border border-amber-200;
-}
-.badge-info {
-  @apply bg-blue-50 text-blue-700 border border-blue-200;
+  background: color-mix(in srgb, var(--color-muted-foreground) 50%, transparent);
 }

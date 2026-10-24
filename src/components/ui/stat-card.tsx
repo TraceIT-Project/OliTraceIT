@@ -16,10 +16,10 @@ export function StatCard({ title, value, subtitle, icon: Icon, trend, className 
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <p className="text-sm font-medium text-gray-500">{title}</p>
-          <p className="mt-1.5 text-2xl font-bold text-gray-900" style={{ fontFamily: 'var(--font-sans)' }}>
+          <p className="mt-1.5 text-2xl font-bold text-gray-900">
             {value}
           </p>
-          {subtitle && <p className="mt-0.5 text-xs text-gray-400">{subtitle}</p>}
+          {subtitle && <p className="mt-0.5 text-xs text-gray-500">{subtitle}</p>}
           {trend && (
             <p className={cn("mt-1.5 text-xs font-medium", trend.positive ? "text-emerald-600" : "text-red-500")}>
               {trend.value}
